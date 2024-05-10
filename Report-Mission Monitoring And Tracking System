@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <conio.h> // for _getch() function on Windows
 using namespace std;
-
+//--------------------------------------------------------------------------------------------------------------------------//
 class Interface {
 protected:
     string password;
