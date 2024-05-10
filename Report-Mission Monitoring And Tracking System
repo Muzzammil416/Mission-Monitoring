@@ -1,0 +1,68 @@
+#include <iostream>
+#include <map>
+#include <string>
+#include <stdlib.h>
+#include <conio.h> // for _getch() function on Windows
+using namespace std;
+
+class Interface {
+protected:
+    string password;
+    string username;
+    map<string, string> credentials; // Dataset to store usernames and passwords
+
+public:
+    Interface() {
+        // Populate the dataset with sample usernames and passwords
+        credentials["dara"] = "abc";
+        credentials["bilal"] = "password2";
+        credentials["user3"] = "password3";
+        credentials["user4"] = "password4";
+        credentials["user5"] = "password5";
+
+        cout << endl << endl << endl;
+        cout << "\t\t\t\t\t\tUsername" << endl;
+        cout << "\t\t\t\t\t\t";
+        cin >> username;
+        cout << endl << endl << endl;
+        cout << "\t\t\t\t\t\tPassword" << endl;
+        cout << "\t\t\t\t\t\t";
+        maskPasswordInput();
+        cout << endl;
+
+        // Check if the entered username exists and if the password matches
+        if (credentials.find(username) != credentials.end() && credentials[username] == password) {
+            cout << "Login successful!" << endl;
+        } else {
+            cout << "Invalid username or password!" << endl;
+        }
+    }
+
+    // Function to mask the password input
+    void maskPasswordInput() {
+        char ch;
+        while ((ch = _getch()) != '\r') { // '\r' represents the Enter key
+            if (ch == '\b') { // '\b' represents the Backspace key
+                if (!password.empty()) {
+                    cout << "\b \b"; // Erase the last character
+                    password = password.substr(0, password.length() - 1); // Remove the last character from the password string
+                }
+            } else {
+                cout << '*'; // Display asterisk for each character
+                password += ch; // Store the character in the password string
+            }
+        }
+    }
+};
+
+class Interface2 {
+public:
+    Interface2() {
+        system("cls");
+    }
+};
+
+int main() {
+    Interface interface;
+    return 0;
+}
