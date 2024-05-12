@@ -93,3 +93,46 @@ public:
     string getReason() const { return reason; }
     bool hasReasonSet() const { return !reason.empty(); }
 
+class GoalTracker
+{
+private:
+    vector<Goal> goals;
+    vector<Goal> completedGoals; // Store completed goals permanently
+    vector<vector<int>> pointsMatrix; // Matrix to store points for each goal
+        
+         void writeGoalToFile(const Goal &goal, ofstream &file) const
+    {
+        goal.writeToStream(file);
+        file << "\n"; // Add separator between goals
+        goal.writeCompletionDatesToFile(file); // Write completion dates
+        file << "\n"; // Add separator between goals
+    }
+
+     void readGoalFromFile(Goal &goal, ifstream &file)
+    {
+        // Existing code...
+        goal.readCompletionDatesFromFile(file); // Read completion dates
+    }
+  void addCompletedGoal(const Goal &goal)
+    {
+        completedGoals.push_back(goal);
+    }
+
+    // Function to write completed goals to file
+    void writeCompletedGoalsToFile(const string &filename) const
+    {
+        ofstream file(filename);
+        if (file.is_open())
+        {
+            for (const auto &goal : completedGoals)
+            {
+                writeGoalToFile(goal, file);
+            }
+            file.close();
+        }
+        else
+        {
+            cerr << "Unable to open file: " << filename << endl;
+        }
+    }
+
