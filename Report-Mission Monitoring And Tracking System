@@ -9,3 +9,58 @@
 #include <ctime>    
 using namespace std;
 
+// Structure to represent a date
+struct Date
+{
+    int day;
+    int month;
+    int year;
+};
+
+class Interface
+{
+protected:
+    string password;
+    string username;
+    map<string, string> credentials; // Dataset to store usernames and passwords
+    string choice;
+    string name;
+    string newpassword;
+    string confirmpassword;
+
+public:
+    // Function to read usernames and passwords from file
+    void readCredentialsFromFile(const string &filename)
+    {
+        ifstream file(filename);
+        if (file.is_open())
+        {
+            string line;
+            while (getline(file, line))
+            {
+                size_t pos = line.find(":");
+                if (pos != string::npos)
+                {
+                    string user = line.substr(0, pos);
+                    string pass = line.substr(pos + 1);
+                    credentials[user] = pass;
+                }
+            }
+            file.close();
+        }
+    }
+
+    // Function to write usernames and passwords to file
+    void writeCredentialsToFile(const string &filename)
+    {
+        ofstream file(filename);
+        if (file.is_open())
+        {
+            for (const auto &cred : credentials)
+            {
+                file << cred.first << ":" << cred.second << "\n";
+            }
+            file.close();
+        }
+    }
+
