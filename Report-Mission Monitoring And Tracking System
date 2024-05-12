@@ -1,8 +1,12 @@
 #include <iostream>
 #include <map>
 #include <string>
+#include <vector>
+#include <algorithm> 
+#include <fstream>   
 #include <stdlib.h>
-#include <conio.h> // for _getch() function on Windows
+#include <conio.h> 
+#include <ctime>    
 using namespace std;
 
 class Interface {
