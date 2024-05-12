@@ -123,6 +123,89 @@ void inputsr()
 
         cout << endl;
     }
+void inputsl()
+    {
+        system("cls");
+        cout << "\t\t\t\t\t\tMAQSAD LOGIN PAGE" << endl;
+        cout << endl
+             << endl
+             << endl
+             << endl;
+        cout << "\t\t\t\t\t\tUsername" << endl;
+        cout << "\t\t\t\t\t\t";
+        getline(cin, username);
+        cout << endl
+             << endl
+             << endl;
+        cout << "\t\t\t\t\t\tPassword" << endl;
+        cout << "\t\t\t\t\t\t";
+        maskPasswordInput();
+        cout << endl;
+
+        // Check if the entered username exists and if the password matches
+        if (credentials.find(username) != credentials.end() && credentials[username] == password)
+        {
+            cout << "Login successful!" << endl;
+        }
+        else
+        {
+            system("cls");
+            cout << "Invalid username or password Reenter!" << endl;
+            cout << "Press '1' to go back to Registration or any other key to continue: ";
+            char backOption;
+            cin >> backOption;
+            cin.ignore(); // Ignore newline character
+            if (backOption == '1')
+            {
+                regis(); // Go back to registration
+            }
+            else
+            {
+                inputsl(); // Try login again
+            }
+        }
+        system("cls");
+    }
+
+    Interface(const string &filename)
+    {
+        // Populate the dataset with usernames and passwords from file
+        readCredentialsFromFile(filename);
+        inputsr();
+    }
+
+    // Default constructor to avoid the error in Interface2
+    Interface() {}
+
+    ~Interface()
+    {
+        // Write usernames and passwords back to file before exiting
+        writeCredentialsToFile("credentials.txt");
+    }
+
+    // Function to mask the password input
+    void maskPasswordInput()
+    {
+        char ch;
+        password.clear(); // Clear the password string before reading a new one
+        while ((ch = _getch()) != '\r') // '\r' represents the Enter key
+        {
+            if (ch == '\b') // '\b' represents the Backspace key
+            {
+                if (!password.empty())
+                {
+                    cout << "\b \b";                                                               // Erase the last character
+                    password = password.substr(0, password.length() - 1); // Remove the last character from the password string
+                }
+            }
+            else
+            {
+                cout << '*';       // Display asterisk for each character
+                password += ch; // Store the character in the password string
+            }
+        }
+    }
+};
 
 class Goal
 {
