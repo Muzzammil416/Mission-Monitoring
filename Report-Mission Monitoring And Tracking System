@@ -171,6 +171,61 @@ void markAsCompleted(const Date &completionDate)
             cout << date.day << "/" << date.month << "/" << date.year << endl;
         }
     }
+// Function to write completion dates to file
+    void writeCompletionDatesToFile(ofstream &file) const
+    {
+        file << completionDates.size() << "\n";
+        for (const auto &date : completionDates)
+        {
+            file << date.day << " " << date.month << " " << date.year << "\n";
+        }
+    }
+
+    // Function to read completion dates from file
+    void readCompletionDatesFromFile(ifstream &file)
+    {
+        int numCompletionDates;
+        file >> numCompletionDates;
+        for (int i = 0; i < numCompletionDates; ++i)
+        {
+            Date completionDate;
+            file >> completionDate.day >> completionDate.month >> completionDate.year;
+            completionDates.push_back(completionDate);
+        }
+    }
+    // Function to update progress
+    void updateProgress(double amount)
+    {
+        currentAmount += amount;
+        dailyProgress.push_back(amount); // Add daily progress
+    }
+
+    // Function to add a reason for the goal
+    void setReason(const string &r)
+    {
+        reason = r;
+    }
+
+    // Function to add a mini goal
+    void addMiniGoal(const string &description, double targetAmount)
+    {
+        miniGoals.push_back(make_pair(description, targetAmount));
+    }
+
+    // Function to display mini goals
+    void displayMiniGoals() const
+    {
+        if (miniGoals.empty())
+        {
+            cout << "No mini goals set for this goal.\n";
+            return;
+        }
+        cout << "Mini Goals:\n";
+        for (const auto &goal : miniGoals)
+        {
+            cout << "Description: " << goal.first << ", Target: $" << goal.second << endl;
+        }
+    }
 
 
 class GoalTracker
