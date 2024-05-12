@@ -864,3 +864,77 @@ public:
         goalTracker.writeGoalsToFile("goals_" + username + ".txt");
     }
 };
+
+class Interface3
+{
+protected:
+    string name;
+    int age;
+    char gender;
+    GoalTracker financialGoals[10]; // Array to store financial goals
+
+public:
+    Interface3()
+    {
+        name = "unknown";
+        age = 0;
+        gender = '\0';
+    }
+    Interface3(string n, int a, char g) : name(n), age(a), gender(g) {}
+
+    // Function to add a financial goal
+    void addFinancialGoal(int index, const string &goalName, double targetAmount, double startingAmount, Date startDate, Date endDate, double dailyGoal)
+    {
+        financialGoals[index].addGoal(goalName, targetAmount, startingAmount, startDate, endDate, dailyGoal);
+    }
+
+    // Function to display financial goals
+    void displayFinancialGoals() const
+    {
+        cout << "Financial Goals:\n";
+        for (int i = 0; i < 10; ++i)
+        {
+            if (financialGoals[i].totalGoals() > 0)
+            {
+                cout << "Goals for " << name << ":\n";
+                financialGoals[i].displayGoals();
+            }
+        }
+    }
+
+    // Function to display total completed goals
+    void displayTotalCompletedGoals() const
+    {
+        int totalCompletedGoals = 0;
+        for (int i = 0; i < 10; ++i)
+        {
+            totalCompletedGoals += financialGoals[i].totalCompletedGoals();
+        }
+        cout << "Total completed goals for " << name << ": " << totalCompletedGoals << endl;
+    }
+
+    // Function to display about section
+    void displayAboutSection() const
+    {
+        cout << "This program allows users to set and track their financial goals.\n";
+        cout << "It provides a user-friendly interface to add, monitor, and complete financial objectives.\n";
+    }
+};
+
+int main()
+{
+    Interface2 interface("credentials.txt");
+    interface.handleGoalOptions();
+    
+    GoalTracker newPoints;
+    // Suppose you have a vector of points to add
+    vector<vector<int>> pointsToAdd = {{1, 0, 0}, {0, 1, 1}};
+
+    // Add points using the + operator
+    GoalTracker updatedTracker = interface.goalTracker + pointsToAdd;
+
+ 
+    return 0;
+}
+
+
