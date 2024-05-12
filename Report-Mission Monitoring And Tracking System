@@ -227,6 +227,99 @@ void markAsCompleted(const Date &completionDate)
         }
     }
 
+    // Function to display daily progress
+    void displayDailyProgress() const
+    {
+        cout << "Daily Progress:\n";
+        if (dailyProgress.empty())
+        {
+            cout << "No progress recorded yet.\n";
+            return;
+        }
+        int day = 1;
+        for (const auto &progress : dailyProgress)
+        {
+            cout << "Day " << day++ << ": $" << progress << endl;
+        }
+    }
+
+    // Function to calculate percentage completion
+    double percentageCompletion() const
+    {
+        return (currentAmount / targetAmount) * 100;
+    }
+
+    // Function to check if daily goal is met
+    bool isDailyGoalMet() const
+    {
+        if (dailyProgress.empty())
+            return false;
+
+        double totalDailyProgress = 0.0;
+        for (const auto &progress : dailyProgress)
+        {
+            totalDailyProgress += progress;
+        }
+
+        return totalDailyProgress >= dailyGoal;
+    }
+
+    // Function to write the goal to file
+    void writeToStream(ofstream &file) const
+    {
+        file << name << "\n";
+        file << targetAmount << "\n";
+        file << currentAmount << "\n";
+        file << startDate.day << " " << startDate.month << " " << startDate.year << "\n";
+        file << endDate.day << " " << endDate.month << " " << endDate.year << "\n";
+        file << reason << "\n";
+        file << miniGoals.size() << "\n";
+        for (const auto &goal : miniGoals)
+        {
+            file << goal.first << " " << goal.second << "\n";
+        }
+        file << dailyProgress.size() << "\n";
+        for (const auto &progress : dailyProgress)
+        {
+            file << progress << "\n";
+        }
+        file << dailyGoal << "\n";
+    }
+
+    // Function to read the goal from file
+    void readFromStream(ifstream &file)
+    {
+        getline(file, name);
+        file >> targetAmount;
+        file >> currentAmount;
+        file >> startDate.day >> startDate.month >> startDate.year;
+        file >> endDate.day >> endDate.month >> endDate.year;
+        file.ignore(); // Ignore newline character
+        getline(file, reason);
+        int numMiniGoals;
+        file >> numMiniGoals;
+        file.ignore(); // Ignore newline character
+        for (int i = 0; i < numMiniGoals; ++i)
+        {
+            string description;
+            double target;
+            file >> description >> target;
+            miniGoals.push_back(make_pair(description, target));
+        }
+        int numDailyProgress;
+        file >> numDailyProgress;
+        file.ignore(); // Ignore newline character
+        for (int i = 0; i < numDailyProgress; ++i)
+        {
+            double progress;
+            file >> progress;
+            dailyProgress.push_back(progress);
+        }
+        file >> dailyGoal;
+
+    }
+};
+
 
 class GoalTracker
 {
