@@ -64,3 +64,32 @@ public:
         }
     }
 
+class Goal
+{
+private:
+    string name;
+    double targetAmount;
+    double currentAmount;
+    Date startDate;
+    Date endDate;
+    string reason;
+    vector<pair<string, double>> miniGoals;
+    vector<double> dailyProgress; // Store daily progress
+    double dailyGoal;             // Daily goal amount
+    vector<Date> completionDates;
+public:
+    Goal() {}
+    // Constructor
+    Goal(string n, double target, double start, Date sDate, Date eDate, double daily)
+        : name(n), targetAmount(target), currentAmount(start),
+          startDate(sDate), endDate(eDate), dailyGoal(daily) {}
+
+    // Getter methods
+    string getName() const { return name; }
+    double getTargetAmount() const { return targetAmount; }
+    double getCurrentAmount() const { return currentAmount; }
+    Date getStartDate() const { return startDate; }
+    Date getEndDate() const { return endDate; }
+    string getReason() const { return reason; }
+    bool hasReasonSet() const { return !reason.empty(); }
+
