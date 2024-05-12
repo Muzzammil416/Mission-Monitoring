@@ -63,6 +63,66 @@ public:
             file.close();
         }
     }
+void inputsr()
+    {
+        cout << "\n\t\t\t\t\t\t      MAQSAD" << endl;
+        cout << "\t\t\t\t\tLogin\t\tor\t\tRegister" << endl;
+        getline(cin, choice);
+        system("cls");
+        if (choice == "login" || choice == "Login")
+        {
+            inputsl();
+        }
+        else if (choice == "register" || choice == "Register")
+        {
+            regis();
+        }
+        else
+        {
+            cout << "Invalid choice. Please try again." << endl;
+            inputsr();
+        }
+    }
+
+    void regis()
+    {
+        system("cls");
+        cout << "\t\t\t\t\t\tMAQSAD REGISTRATION PAGE" << endl;
+        cout << endl
+             << endl
+             << endl;
+        cout << "\t\t\t\t\t\tName" << endl;
+        cout << "\t\t\t\t\t\t";
+        getline(cin, username);
+        cout << endl
+             << endl
+             << endl;
+        cout << "\t\t\t\t\t\t New Password" << endl;
+        cout << "\t\t\t\t\t\t";
+        getline(cin, newpassword);
+        cout << endl
+             << endl
+             << endl;
+        cout << "\t\t\t\t\t\t Confirm Password" << endl;
+        cout << "\t\t\t\t\t\t";
+        getline(cin, confirmpassword);
+
+        if (newpassword == confirmpassword)
+        {
+            cout << endl
+                 << "Passwords match. Registration successful!" << endl;
+            credentials[username] = newpassword;
+            inputsl(); // Store username and password in the dataset
+        }
+        else
+        {
+            cout << endl
+                 << "Passwords do not match. Please try again." << endl;
+            regis(); // If passwords do not match, prompt for registration again
+        }
+
+        cout << endl;
+    }
 
 class Goal
 {
