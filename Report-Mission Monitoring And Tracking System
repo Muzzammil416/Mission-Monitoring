@@ -215,4 +215,52 @@ private:
             cerr << "Unable to open file: " << filename << endl;
         }
     }
+// Function to read completed goals from file
+    void readCompletedGoalsFromFile(const string &filename)
+    {
+        ifstream file(filename);
+        if (file.is_open())
+        {
+            while (!file.eof())
+            {
+                Goal goal;
+                goal.readFromStream(file);
+                if (!file.eof())
+                {
+                    completedGoals.push_back(goal);
+                }
+            }
+            file.close();
+        }
+        else
+        {
+            cerr << "Unable to open file: " << filename << endl;
+        }
+    }
 
+public:
+	
+	GoalTracker operator+(const vector<vector<int>> &points) const
+    {
+        GoalTracker result(*this);
+        for (size_t i = 0; i < points.size(); ++i)
+        {
+            for (size_t j = 0; j < points[i].size(); ++j)
+            {
+                if (i < result.pointsMatrix.size() && j < result.pointsMatrix[i].size())
+                {
+                    result.pointsMatrix[i][j] += points[i][j];
+                }
+            }
+        }
+        return result;
+    }
+    // Function to add a new goal
+    void addGoal(const string &name, double targetAmount, double startingAmount, Date startDate, Date endDate, double dailyGoal)
+    {
+        goals.emplace_back(name, targetAmount, startingAmount, startDate, endDate, dailyGoal);
+        // Initialize a row for the new goal in the points matrix
+        pointsMatrix.push_back(vector<int>());
+         writeGoalsToFile("goals.txt");
+        cout << "Goal added successfully!\n";
+    }
