@@ -92,6 +92,26 @@ public:
     Date getEndDate() const { return endDate; }
     string getReason() const { return reason; }
     bool hasReasonSet() const { return !reason.empty(); }
+void markAsCompleted(const Date &completionDate)
+    {
+        completionDates.push_back(completionDate);
+    }
+
+    // Function to display completion dates
+    void displayCompletionDates() const
+    {
+        if (completionDates.empty())
+        {
+            cout << "Goal has not been completed yet.\n";
+            return;
+        }
+        cout << "Completion Dates:\n";
+        for (const auto &date : completionDates)
+        {
+            cout << date.day << "/" << date.month << "/" << date.year << endl;
+        }
+    }
+
 
 class GoalTracker
 {
