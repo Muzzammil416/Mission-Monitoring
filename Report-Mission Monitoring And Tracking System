@@ -706,3 +706,161 @@ public:
     }
 }
 };
+
+class Interface2 : public Interface
+{
+public:
+    GoalTracker goalTracker;
+
+    Interface2(const string &filename) : Interface(filename)
+    {
+        string goalFilename = "goals_" + username + ".txt";
+        goalTracker.readGoalsFromFile(goalFilename);
+    }
+
+    // Function to display menu for goal-related options
+    void displayGoalOptions()
+    {
+        cout << "\t\t\t\t\t\t    MAQSAD\n";
+        cout << "\t\t\t\t\tPlease choose from the following goals: \n";
+        cout << "\t\t\t\t\t\t1. Create a Goal\n\t\t\t\t\t\t2. Current Goals\n\t\t\t\t\t\t3. Goal History\n\t\t\t\t\t\t4. Points Matrix\n\t\t\t\t\t\t5. About Section\n\t\t\t\t\t\t6. Exit" << endl;
+    }
+
+    // Function to handle goal-related actions
+    void handleGoalOptions()
+    {
+        int option;
+        do
+        {
+            displayGoalOptions();
+            cout << "Enter your choice: ";
+            cin >> option;
+            cin.ignore(); // Ignore newline character
+            switch (option)
+            {
+            case 1:
+                system("cls");
+                createGoal();
+                system("cls");
+                break;
+            case 2:
+                system("cls");
+                displayCurrentGoals();
+                break;
+            case 3:
+                system("cls");
+                displayGoalHistory();
+                break;
+            case 4:
+                system("cls");
+                goalTracker.displayPointsMatrix();
+                break;
+            case 5:
+                system("cls");
+                cout << "\t\t\t\t\tABOUT SECTION" << endl;
+                cout << endl
+                     << endl;
+                cout << "\t\t\t\t\tABOUT THE APPLICATION" << endl;
+                cout << "\t\t\t\t\tThis is a goal tracker application developed by MAQSAD. The application enables users to set financial goals and track their progress towards achieving them." << endl;
+                cout << "\t\t\t\t\tUSING THE APPLICATION" << endl;
+                cout << "\t\t\t\t\t1. To create a goal, select the 'Create a Goal' option from the main menu and follow the prompts." << endl;
+                cout << "\t\t\t\t\t2. To view current goals, select the 'Current Goals' option from the main menu." << endl;
+                cout << "\t\t\t\t\t3. To view goal history, select the 'Goal History' option from the main menu." << endl;
+                cout << "\t\t\t\t\t4. To view the points matrix, select the 'Points Matrix' option from the main menu." << endl;
+                cout << "\t\t\t\t\t5. To exit the application, select the 'Exit' option from the main menu." << endl;
+                cout << "\t\t\t\t\tABOUT MAQSAD" << endl;
+                cout << "\t\t\t\t\tMAQSAD is a software development company specializing in creating innovative solutions for personal and professional use." << endl;
+                cout << "\t\t\t\t\tFor more information, visit our website: www.maqsad.com" << endl;
+                break;
+            default:
+                cout << "Invalid choice. Please try again." << endl;
+            }
+        } while (option != 6);
+
+        // Update goals to file before exiting
+        goalTracker.writeGoalsToFile("goals_" + username + ".txt");
+    }
+
+    // Function to create a new goal
+    void createGoal()
+    {
+        string name;
+        double targetAmount, startingAmount, dailyGoal;
+        Date startDate, endDate;
+        string reason;
+
+        cout << "\t\t\t\t\t\t    CREATE A GOAL" << endl;
+        cout << "\t\t\t\t\tEnter the name of your goal: ";
+        getline(cin, name);
+        cout << "\t\t\t\t\tEnter the target amount: $";
+        cin >> targetAmount;
+        cout << "\t\t\t\t\tEnter the starting amount: $";
+        cin >> startingAmount;
+        cout << "\t\t\t\t\tEnter the daily goal: $";
+        cin >> dailyGoal;
+        cout << "\t\t\t\t\tEnter the start date (DD MM YYYY): ";
+        cin >> startDate.day >> startDate.month >> startDate.year;
+        cout << "\t\t\t\t\tEnter the end date (DD MM YYYY): ";
+        cin >> endDate.day >> endDate.month >> endDate.year;
+        cin.ignore(); // Ignore newline character
+
+        Goal newGoal(name, targetAmount, startingAmount, startDate, endDate, dailyGoal);
+        cout << "\t\t\t\t\tDo you have any specific reason for this goal? (yes/no): ";
+        string choice;
+        getline(cin, choice);
+        if (choice == "yes" || choice == "Yes")
+        {
+            cout << "\t\t\t\t\tEnter your reason: ";
+            getline(cin, reason);
+            newGoal.setReason(reason);
+        }
+
+        goalTracker.addGoal(name, targetAmount, startingAmount, startDate, endDate, dailyGoal);
+    }
+
+    // Function to display current goals
+    void displayCurrentGoals()
+    {
+        goalTracker.displayGoals();
+        trackDailyProgress();
+    }
+
+    // Function to display goal history (completed goals)
+    void displayGoalHistory()
+    {
+        goalTracker.displayCompletedGoals();
+    }
+
+    // Function to display about section
+    void displayAboutSection()
+    {
+        cout << "This program allows users to create and track financial goals.\n";
+        cout << "It provides options to create new goals, view current goals, view goal history,\n";
+        cout << "view points matrix, and learn more about the program.\n";
+    }
+
+    // Function to track daily progress of current goals
+    void trackDailyProgress()
+    {
+        char choice;
+        do
+        {
+            string goalName;
+            double progress;
+            cout << "\nDo you want to update progress for any goal? (y/n): ";
+            cin >> choice;
+            if (choice == 'y' || choice == 'Y')
+            {
+                cin.ignore(); // Ignore newline character
+                cout << "Enter goal name: ";
+                getline(cin, goalName);
+                cout << "Enter progress for today: $";
+                cin >> progress;
+                goalTracker.updateGoalProgress(goalName, progress);
+            }
+        } while (choice == 'y' || choice == 'Y');
+
+        // Update goals to file before exiting
+        goalTracker.writeGoalsToFile("goals_" + username + ".txt");
+    }
+};
