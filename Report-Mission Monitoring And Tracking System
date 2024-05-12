@@ -495,3 +495,214 @@ public:
          writeGoalsToFile("goals.txt");
         cout << "Goal added successfully!\n";
     }
+
+    // Function to display all goals
+    void displayGoals() const
+    {
+        if (goals.empty())
+        {
+            cout << "No goals added yet.\n";
+            return;
+        }
+        cout << "Goals:\n";
+        for (const auto &goal : goals)
+        {
+            cout << "Name: " << goal.getName() << ", Target: $" << goal.getTargetAmount()
+                 << ", Current: $" << goal.getCurrentAmount()<< ", Time Remaining: " << daysRemaining(goal.getEndDate()) << ", Percentage Completion: " << goal.percentageCompletion() << "%" << endl;
+            if (goal.hasReasonSet())
+            {
+                cout << "Reason: " << goal.getReason() << endl;
+            }
+            goal.displayMiniGoals();
+            goal.displayDailyProgress(); // Display daily progress
+        }
+    }
+
+    // Function to update progress of a goal
+  void updateGoalProgress(const string &goalName, double amount)
+    {
+        for (auto &goal : goals)
+        {
+            if (goal.getName() == goalName)
+            {
+                goal.updateProgress(amount);
+                cout << "Progress updated for goal '" << goal.getName() << "'.\n";
+                if (goal.getCurrentAmount() >= goal.getTargetAmount())
+                {
+                    completedGoals.push_back(goal); // Move completed goal to completedGoals
+                    // Remove goal from goals using remove_if with a lambda function
+                    goals.erase(std::remove_if(goals.begin(), goals.end(), [&](const Goal &g) { return g.getName() == goalName; }), goals.end());
+                    // Remove the corresponding row from the points matrix
+                    pointsMatrix.erase(pointsMatrix.begin() + (&goal - &goals[0]));
+                    cout << "Goal '" << goal.getName() << "' completed!\n";
+                }
+                else
+                {
+                    if (goal.isDailyGoalMet())
+                    {
+                        // Add a point in the points matrix for meeting the daily goal
+                        pointsMatrix[&goal - &goals[0]].push_back(1);
+                        cout << "Daily goal for goal '" << goal.getName() << "' met!\n";
+                    }
+                }
+
+                // Write the updated goals to file
+                writeGoalsToFile("goals.txt");
+                return;
+            }
+        }
+        cout << "Goal not found.\n";
+        system("cls");
+    }
+
+    // Function to display completed goals
+    void displayCompletedGoals() const
+    {
+        if (completedGoals.empty())
+        {
+            cout << "No goals completed yet.\n";
+            return;
+        }
+        cout << "Completed Goals:\n";
+        for (const auto &goal : completedGoals)
+        {
+            cout << "Name: " << goal.getName() << ", Target: $" << goal.getTargetAmount()
+                 << ", Current: $" << goal.getCurrentAmount() << endl;
+        }
+    }
+
+    // Function to add mini goals to a goal
+    void addMiniGoal(const string &goalName, const string &description, double targetAmount)
+    {
+        for (auto &goal : goals)
+        {
+            if (goal.getName() == goalName)
+            {
+                goal.addMiniGoal(description, targetAmount);
+                // Add a point for the mini goal in the points matrix
+                pointsMatrix[&goal - &goals[0]].push_back(1);
+                cout << "Mini goal added for goal '" << goalName << "'.\n";
+                return;
+            }
+        }
+        cout << "Goal not found.\n";
+    }
+
+    // Function to add a reason for a goal
+    void addReason(const string &goalName, const string &reason)
+    {
+        for (auto &goal : goals)
+        {
+            if (goal.getName() == goalName)
+            {
+                goal.setReason(reason);
+                cout << "Reason added for goal '" << goalName << "'.\n";
+                return;
+            }
+        }
+        cout << "Goal not found.\n";
+    }
+
+    // Function to calculate days remaining until a date
+    int daysRemaining(const Date &endDate) const
+    {
+        time_t now = time(nullptr);
+        tm *timeinfo = localtime(&now);
+        int currentYear = timeinfo->tm_year + 1900;
+        int currentMonth = timeinfo->tm_mon + 1;
+        int currentDay = timeinfo->tm_mday;
+
+        int remainingDays = 0;
+
+        if (endDate.year > currentYear || (endDate.year == currentYear && endDate.month > currentMonth) ||
+            (endDate.year == currentYear && endDate.month == currentMonth && endDate.day > currentDay))
+        {
+            remainingDays = (endDate.year - currentYear) * 365;
+            remainingDays += (endDate.month - currentMonth) * 30;
+            remainingDays += endDate.day - currentDay;
+        }
+
+        return remainingDays;
+    }
+
+    // Function to display the points matrix
+    void displayPointsMatrix() const
+    {
+        cout << "Points Matrix:\n";
+        for (size_t i = 0; i < pointsMatrix.size(); ++i)
+        {
+            cout << "Goal " << i + 1 << ": ";
+            for (size_t j = 0; j < pointsMatrix[i].size(); ++j)
+            {
+                cout << pointsMatrix[i][j] << " ";
+            }
+            cout << endl;
+        }
+    }
+
+    // Function to get total number of goals
+    int totalGoals() const
+    {
+        return goals.size();
+    }
+
+    // Function to get total number of completed goals
+    int totalCompletedGoals() const
+    {
+        return completedGoals.size();
+    }
+
+    // Function to write goals to file
+    void writeGoalsToFile(const string &filename) const
+    {
+   
+         ofstream file(filename);
+    if (file.is_open())
+    {
+        for (const auto &goal : goals)
+        {
+            writeGoalToFile(goal, file);
+        }
+        for (const auto &completedGoal : completedGoals)
+        {
+            writeGoalToFile(completedGoal, file);
+        }
+        file.close();
+    }
+    else
+    {
+        cerr << "Unable to open file: " << filename << endl;
+    }
+}
+    
+
+    // Function to read goals from file
+    void readGoalsFromFile(const string &filename)
+    {
+        ifstream file(filename);
+    if (file.is_open())
+    {
+        while (!file.eof())
+        {
+            Goal goal;
+            goal.readFromStream(file);
+            if (!file.eof())
+            {
+                if (goal.getCurrentAmount() >= goal.getTargetAmount())
+                {
+                    completedGoals.push_back(goal);
+                }
+                else
+                {
+                    goals.push_back(goal);
+                }
+            }
+        }
+        file.close();
+    }
+    else
+    {
+        cerr << "Unable to open file: " << filename << endl;
+    }
+}
+};
