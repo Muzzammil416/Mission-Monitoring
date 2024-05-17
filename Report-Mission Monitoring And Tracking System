@@ -2,11 +2,11 @@
 #include <map>
 #include <string>
 #include <vector>
-#include <algorithm> 
-#include <fstream>   
+#include <algorithm> // Include algorithm header for remove_if function
+#include <fstream>   // File handling
 #include <stdlib.h>
-#include <conio.h> 
-#include <ctime>    
+#include <conio.h> // for _getch() function on Windows
+#include <ctime>    // for time functions
 using namespace std;
 
 // Structure to represent a date
@@ -63,7 +63,8 @@ public:
             file.close();
         }
     }
-void inputsr()
+
+    void inputsr()
     {
         cout << "\n\t\t\t\t\t\t      MAQSAD" << endl;
         cout << "\t\t\t\t\tLogin\t\tor\t\tRegister" << endl;
@@ -123,7 +124,8 @@ void inputsr()
 
         cout << endl;
     }
-void inputsl()
+
+    void inputsl()
     {
         system("cls");
         cout << "\t\t\t\t\t\tMAQSAD LOGIN PAGE" << endl;
@@ -235,7 +237,7 @@ public:
     Date getEndDate() const { return endDate; }
     string getReason() const { return reason; }
     bool hasReasonSet() const { return !reason.empty(); }
-void markAsCompleted(const Date &completionDate)
+ void markAsCompleted(const Date &completionDate)
     {
         completionDates.push_back(completionDate);
     }
@@ -254,7 +256,8 @@ void markAsCompleted(const Date &completionDate)
             cout << date.day << "/" << date.month << "/" << date.year << endl;
         }
     }
-// Function to write completion dates to file
+
+    // Function to write completion dates to file
     void writeCompletionDatesToFile(ofstream &file) const
     {
         file << completionDates.size() << "\n";
@@ -403,7 +406,6 @@ void markAsCompleted(const Date &completionDate)
     }
 };
 
-
 class GoalTracker
 {
 private:
@@ -411,18 +413,19 @@ private:
     vector<Goal> completedGoals; // Store completed goals permanently
     vector<vector<int>> pointsMatrix; // Matrix to store points for each goal
         
-         void writeGoalToFile(const Goal &goal, ofstream &file) const
+         
+
+//     void readGoalFromFile(Goal &goal, ifstream &file)
+//    {
+//        // Existing code...
+//        goal.readCompletionDatesFromFile(file); // Read completion dates
+//    }
+    void writeGoalToFile(const Goal &goal, ofstream &file) const
     {
         goal.writeToStream(file);
         file << "\n"; // Add separator between goals
         goal.writeCompletionDatesToFile(file); // Write completion dates
         file << "\n"; // Add separator between goals
-    }
-
-     void readGoalFromFile(Goal &goal, ifstream &file)
-    {
-        // Existing code...
-        goal.readCompletionDatesFromFile(file); // Read completion dates
     }
   void addCompletedGoal(const Goal &goal)
     {
@@ -430,44 +433,45 @@ private:
     }
 
     // Function to write completed goals to file
-    void writeCompletedGoalsToFile(const string &filename) const
-    {
-        ofstream file(filename);
-        if (file.is_open())
-        {
-            for (const auto &goal : completedGoals)
-            {
-                writeGoalToFile(goal, file);
-            }
-            file.close();
-        }
-        else
-        {
-            cerr << "Unable to open file: " << filename << endl;
-        }
-    }
-// Function to read completed goals from file
-    void readCompletedGoalsFromFile(const string &filename)
-    {
-        ifstream file(filename);
-        if (file.is_open())
-        {
-            while (!file.eof())
-            {
-                Goal goal;
-                goal.readFromStream(file);
-                if (!file.eof())
-                {
-                    completedGoals.push_back(goal);
-                }
-            }
-            file.close();
-        }
-        else
-        {
-            cerr << "Unable to open file: " << filename << endl;
-        }
-    }
+//    void writeCompletedGoalsToFile(const string &filename) const
+//    {
+//        ofstream file(filename);
+//        if (file.is_open())
+//        {
+//            for (const auto &goal : completedGoals)
+//            {
+//                writeGoalToFile(goal, file);
+//            }
+//            file.close();
+//        }
+//        else
+//        {
+//            cerr << "Unable to open file: " << filename << endl;
+//        }
+//    }
+
+    // Function to read completed goals from file
+//    void readCompletedGoalsFromFile(const string &filename)
+//    {
+//        ifstream file(filename);
+//        if (file.is_open())
+//        {
+//            while (!file.eof())
+//            {
+//                Goal goal;
+//                goal.readFromStream(file);
+//                if (!file.eof())
+//                {
+//                    completedGoals.push_back(goal);
+//                }
+//            }
+//            file.close();
+//        }
+//        else
+//        {
+//            cerr << "Unable to open file: " << filename << endl;
+//        }
+//    }
 
 public:
 	
@@ -657,8 +661,10 @@ public:
     {
    
          ofstream file(filename);
+         
     if (file.is_open())
     {
+    
         for (const auto &goal : goals)
         {
             writeGoalToFile(goal, file);
@@ -667,6 +673,7 @@ public:
         {
             writeGoalToFile(completedGoal, file);
         }
+
         file.close();
     }
     else
@@ -686,8 +693,12 @@ public:
         {
             Goal goal;
             goal.readFromStream(file);
+            goal.readCompletionDatesFromFile(file); // Read completion dates
             if (!file.eof())
             {
+            	//goals.push_back(goal);
+                    pointsMatrix.push_back(vector<int>());
+
                 if (goal.getCurrentAmount() >= goal.getTargetAmount())
                 {
                     completedGoals.push_back(goal);
@@ -772,6 +783,8 @@ public:
                 cout << "\t\t\t\t\tMAQSAD is a software development company specializing in creating innovative solutions for personal and professional use." << endl;
                 cout << "\t\t\t\t\tFor more information, visit our website: www.maqsad.com" << endl;
                 break;
+            case 6:
+            	break;
             default:
                 cout << "Invalid choice. Please try again." << endl;
             }
@@ -865,6 +878,7 @@ public:
     }
 };
 
+
 class Interface3
 {
 protected:
@@ -874,6 +888,7 @@ protected:
     GoalTracker financialGoals[10]; // Array to store financial goals
 
 public:
+	friend void age();
     Interface3()
     {
         name = "unknown";
@@ -920,7 +935,10 @@ public:
         cout << "It provides a user-friendly interface to add, monitor, and complete financial objectives.\n";
     }
 };
-
+void age(){
+Interface3 obj1;
+cout<<obj1.age<<endl;	
+}
 int main()
 {
     Interface2 interface("credentials.txt");
@@ -930,11 +948,9 @@ int main()
     // Suppose you have a vector of points to add
     vector<vector<int>> pointsToAdd = {{1, 0, 0}, {0, 1, 1}};
 
-    // Add points using the + operator
-    GoalTracker updatedTracker = interface.goalTracker + pointsToAdd;
+ //Add points using the + operator
+     GoalTracker updatedTracker = interface.goalTracker + pointsToAdd;
 
  
     return 0;
 }
-
-
